@@ -5,6 +5,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+/*
+change most var from int to long to fit my 64-bit machine
+*/
+
 long token; // current token
 char *src, *old_src; // pointer to source code string
 int poolsize; // default size fo text/data/stack
@@ -44,12 +48,88 @@ long cycle;
 enum { LC, LI, SC, SI,
        IMM, PUSH, JMP, JZ, JNZ, CALL, ENT, ADJ, LEV, LEA, 
        OR, XOR, AND, EQ, NE, LT, LE, GT, GE, SHL, SHR, ADD, SUB, MUL, DIV, MOD,
-       EXIT, OPEN, CLOS, READ, PRTF, MALC, MSET, MCMP};
+       EXIT, OPEN, CLOS, READ, PRTF, MALC, MSET, MCMP
+};
+
+/*
+                   +-------+                      +--------+
+-- source code --> | lexer | --> token stream --> | parser | --> assembly
+                   +-------+                      +--------+
+*/
+
+// tokens and classes
+enum {
+    Num = 128, Fun, Sys, Glo, Loc, Id,
+          Char, Else, Enum, If, Int, Return, Sizeof, While,
+          Assign, Cond, Lor, Lan, Or, Xor, And, Eq, Lt, Gt, Le, Shl, Shr, Add, Sub, Mul, Div, Mod, Inc, Dec, Brak 
+};
+
+/*
+Symbol table:
+----+-----+----+----+----+-----+-----+-----+------+------+----
+ .. |token|hash|name|type|class|value|btype|bclass|bvalue| .. 
+----+-----+----+----+----+-----+-----+-----+------+------+----
+    |<--         one single identifier                -->|
+*/
+
+long token_val; // value of current token (mainly for number)
+long *current_id; // current parsed ID
+*symbols; // symbol table
+// fields of identifier
+enum {
+    Token, Hash, Name, Type, Class, Value, Btype, Bclass, Bvalue, IdSize
+};
 
 /* get next one, ignore blanket */
 void next()
 {
-    token = *src++;
+    char *last_pos;
+    int hash;
+    while (token = *src) *src++; // parse token here, use while to jump unknown token
+    if(token == '\n') ++line; // switch lines
+    else if (token == '#')
+    {
+        // do not support macro, just skip it
+        while(*src != 0 && *src != '\n') src++;
+    }
+    
+    else if ((token >= 'a' && token <= 'z') || (token <= 'A' && token <= 'Z') || (token == '_'))
+    {
+        // parser identifier
+        last_pos = src - 1;
+        hash = token;
+
+        while((*src >= 'a' && *src <= 'z') || (*src >= 'A' && *src <= 'Z') || (*src >= '0' && *src <= '9') || (*src == '_'))
+        {
+            hash = hash * 167 + *src; // make mapping result in the output space sparse && uniform as possible
+            src++;
+        }
+
+        // look for existing identifier, linear search
+        current_id = symbols;
+        while(current_id[Token])
+        {
+            if(current_id[Hash] == hash && !memcmp((char *) current_id[Name], last_pos, src-last_pos))
+            {
+                // found one return
+                token = current_id[Token];
+                return;
+            }
+            current_id = current_id + IdSize;
+        }
+        
+        // store new ID
+        current_id[Name] = (long) last_pos;
+        current_id[Hash] = hash;
+        token = current_id[Hash] = Id;
+        return;
+    }
+    else if(token >= '0' && token <= '9')
+    {
+        token_val = token - '0';
+        // TBC...
+        return;
+    }
     return;
 }
 
