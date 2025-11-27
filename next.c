@@ -1,13 +1,20 @@
 #include "next.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 /* get next one, ignore blanket */
 void next()
 {
     char *last_pos;
     int hash;
-    while (token = *src) 
+    token = *src;
+    while (token) 
     {
-        *src++; // parse token here, use while to jump unknown token
+        src++; // parse token here, use while to jump unknown token
         if(token == '\n') ++line; // switch lines
         else if (token == '#')
         {
@@ -115,7 +122,7 @@ void next()
                 {
                     // escape character
                     token_val = *src++;
-                    if(token_val = 'n') token_val = '\n';
+                    if(token_val == 'n') token_val = '\n';
                 }
                 if(token == '"') *data++ = token_val;
             }

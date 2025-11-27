@@ -47,11 +47,14 @@ long ax; // store the result after executing one command
 long cycle;
 
 // Instructions
+/*
 enum { LC, LI, SC, SI,
        IMM, PUSH, JMP, JZ, JNZ, CALL, ENT, ADJ, LEV, LEA, 
        OR, XOR, AND, EQ, NE, LT, LE, GT, GE, SHL, SHR, ADD, SUB, MUL, DIV, MOD,
        EXIT, OPEN, CLOS, READ, PRTF, MALC, MSET, MCMP
 };
+*/
+
 
 /*
                    +-------+                      +--------+
@@ -60,11 +63,14 @@ enum { LC, LI, SC, SI,
 */
 
 // tokens and classes
+/*
 enum {
     Num = 128, Fun, Sys, Glo, Loc, Id,
           Char, Else, Enum, If, Int, Return, Sizeof, While,
           Assign, Cond, Lor, Lan, Or, Xor, And, Eq, Ne, Lt, Gt, Le, Ge, Shl, Shr, Add, Sub, Mul, Div, Mod, Inc, Dec, Brak 
 };
+*/
+
 
 /*
 Symbol table:
@@ -79,9 +85,12 @@ long *current_id; // current parsed ID
 long *symbols; // symbol table
 
 // fields of identifier
+/*
 enum {
     Token, Hash, Name, Type, Class, Value, Btype, Bclass, Bvalue, IdSize
 };
+*/
+
 
 // types of variable/function
 enum {CHAR, INT, PTR};
