@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/compiler.dir/eval.c.o.d"
   "CMakeFiles/compiler.dir/next.c.o"
   "CMakeFiles/compiler.dir/next.c.o.d"
+  "CMakeFiles/compiler.dir/parse.c.o"
+  "CMakeFiles/compiler.dir/parse.c.o.d"
   "compiler"
   "compiler.pdb"
 )

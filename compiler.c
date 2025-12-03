@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include "next.h"
 #include "eval.h"
+#include "parse.h"
 
 /*
 change most var from int to long to fit my 64-bit machine
@@ -96,6 +97,19 @@ enum {
 enum {CHAR, INT, PTR};
 int *idmain; // the 'main' function
 
+char *line2 = NULL;
+char *src = NULL;
+
+void match(long tk)
+{
+    if(token != tk) 
+    {
+        printf("expected token: %ld(%ld), got: %ld(%ld)", tk, tk, token, token);
+        exit(-1);
+    }
+    next();
+}
+
 /* analysis one expression */
 void expression(int level)
 {
@@ -114,6 +128,16 @@ void program()
 
 int main(int argc, char **argv)
 {
+    size_t linecap = 0;
+    ssize_t linelen;
+    while((linelen = getline(&line2, &linecap, stdin)) > 0)
+    {
+        src = line2;
+        next();
+        printf("%d\n", expr());
+    }
+    return 0;
+    /*
     int i, fd;
     
     argc--;
@@ -193,20 +217,18 @@ int main(int argc, char **argv)
 
     next(); current_id[Token] = Char; // handle void type
     next(); idmain = current_id; // keep track of main
-    /*
     // test "10 + 20"
-    i = 0;
-    text[i++] = IMM;
-    text[i++] = 10;
-    text[i++] = PUSH;
-    text[i++] = IMM;
-    text[i++] = 20;
-    text[i++] = ADD;
-    text[i++] = PUSH;
-    text[i++] = EXIT;
-    pc = text;
-    */
-
+    // i = 0;
+    // text[i++] = IMM;
+    // text[i++] = 10;
+    // text[i++] = PUSH;
+    // text[i++] = IMM;
+    // text[i++] = 20;
+    // text[i++] = ADD;
+    // text[i++] = PUSH;
+    // text[i++] = EXIT;
+    // pc = text;
     // program();
     return eval();
+    */
 }

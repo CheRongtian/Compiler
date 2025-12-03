@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/cherongtian/Desktop/demo projects/Compiler/compiler.c" "CMakeFiles/compiler.dir/compiler.c.o" "gcc" "CMakeFiles/compiler.dir/compiler.c.o.d"
   "/Users/cherongtian/Desktop/demo projects/Compiler/eval.c" "CMakeFiles/compiler.dir/eval.c.o" "gcc" "CMakeFiles/compiler.dir/eval.c.o.d"
   "/Users/cherongtian/Desktop/demo projects/Compiler/next.c" "CMakeFiles/compiler.dir/next.c.o" "gcc" "CMakeFiles/compiler.dir/next.c.o.d"
+  "/Users/cherongtian/Desktop/demo projects/Compiler/parse.c" "CMakeFiles/compiler.dir/parse.c.o" "gcc" "CMakeFiles/compiler.dir/parse.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

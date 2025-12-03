@@ -201,6 +201,30 @@ next.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/next.c.s
 .PHONY : next.c.s
 
+parse.o: parse.c.o
+.PHONY : parse.o
+
+# target to build an object file
+parse.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/parse.c.o
+.PHONY : parse.c.o
+
+parse.i: parse.c.i
+.PHONY : parse.i
+
+# target to preprocess a source file
+parse.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/parse.c.i
+.PHONY : parse.c.i
+
+parse.s: parse.c.s
+.PHONY : parse.s
+
+# target to generate assembly for a file
+parse.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/parse.c.s
+.PHONY : parse.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -219,6 +243,9 @@ help:
 	@echo "... next.o"
 	@echo "... next.i"
 	@echo "... next.s"
+	@echo "... parse.o"
+	@echo "... parse.i"
+	@echo "... parse.s"
 .PHONY : help
 
 

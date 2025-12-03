@@ -122,7 +122,8 @@ CMakeFiles/compiler.dir/compiler.c.o: /Users/cherongtian/Desktop/demo\ projects/
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/ptrcheck.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdint.h \
   /Users/cherongtian/Desktop/demo\ projects/Compiler/eval.h \
-  /Users/cherongtian/Desktop/demo\ projects/Compiler/next.h
+  /Users/cherongtian/Desktop/demo\ projects/Compiler/next.h \
+  /Users/cherongtian/Desktop/demo\ projects/Compiler/parse.h
 
 CMakeFiles/compiler.dir/eval.c.o: /Users/cherongtian/Desktop/demo\ projects/Compiler/eval.c \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Availability.h \
@@ -368,8 +369,14 @@ CMakeFiles/compiler.dir/next.c.o: /Users/cherongtian/Desktop/demo\ projects/Comp
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/stdint.h \
   /Users/cherongtian/Desktop/demo\ projects/Compiler/next.h
 
+CMakeFiles/compiler.dir/parse.c.o: /Users/cherongtian/Desktop/demo\ projects/Compiler/parse.c \
+  /Users/cherongtian/Desktop/demo\ projects/Compiler/next.h \
+  /Users/cherongtian/Desktop/demo\ projects/Compiler/parse.h
+
 
 /Users/cherongtian/Desktop/demo\ projects/Compiler/next.c:
+
+/Users/cherongtian/Desktop/demo\ projects/Compiler/parse.h:
 
 /Users/cherongtian/Desktop/demo\ projects/Compiler/next.h:
 
@@ -500,6 +507,8 @@ CMakeFiles/compiler.dir/next.c.o: /Users/cherongtian/Desktop/demo\ projects/Comp
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/machine/signal.h:
 
 /Users/cherongtian/Desktop/demo\ projects/Compiler/compiler.c:
+
+/Users/cherongtian/Desktop/demo\ projects/Compiler/parse.c:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_zero.h:
 
