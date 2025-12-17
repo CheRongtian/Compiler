@@ -1,1 +1,0 @@
-/usr/bin/cc  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/compiler.dir/compiler.c.o CMakeFiles/compiler.dir/eval.c.o CMakeFiles/compiler.dir/next.c.o CMakeFiles/compiler.dir/parse.c.o -o compiler
