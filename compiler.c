@@ -541,9 +541,139 @@ void statement()
 /* analysis one expression */
 void expression(int level)
 {
-    // do nothing ~
+    /*
+    after step 1, 2
+    |      |
+    +------+
+    | 3    |   |      |
+    +------+   +------+
+    | 2    |   | +    |
+    +------+   +------+
+
+    after step 4
+    |      |   |      |
+    +------+   +------+
+    | 5    |   | -    |
+    +------+   +------+
+
+    after step 7
+    |      |
+    +------+
+    | 5    |
+    +------+   +------+
+    | 4    |   | *    |
+    +------+   +------+
+    | 5    |   | -    |
+    +------+   +------+
+    */
+
+    long *id;
+    long tmp;
+    long *addr;
+    
+    if(token == Num)
+    {
+        match(Num);
+
+        // emit code
+        *++text = IMM;
+        *++text = token_val;
+        expr_type = INT;
+    }
+
+    else if(token == '"')
+    {
+        // emit code
+        *++text = IMM;
+        *++text = token_val;
+
+        match('"');
+        // store the rest strings
+        while(token == '"') match('"');
+
+        // append the end of stroing character '\0', all the data are default
+        // to 0, so just move data one position forward
+        data = (char *)(((long)data + sizeof(long))&(-sizeof(long)));
+        expr_type = PTR;
+    }
+
+    else if(token == Sizeof)
+    {
+        // sizeof is actually an unary operator
+        // now only `sizeof(long)`, `sizeof(char)` and `sizeof(*...)` are
+        // supported
+        match(Sizeof);
+        match('(');
+        expr_type = INT;
+
+        if(token == Int) match(Int);
+        else if(token == Char)
+        {
+            match(Char);
+            expr_type = CHAR;
+        }
+
+        while(token = Mul)
+        {
+            match(Mul);
+            expr_type += PTR;
+        }
+
+        match(')');
+
+        // emit code
+        *++text = IMM;
+        *++text = (expr_type == CHAR) ? sizeof(char) : sizeof(long);
+
+        expr_type = INT;
+    }
+
+    else if (token == Id)
+    {
+        // there are several type when occurs to ID
+        // but this is unit, so it can only be
+        // 1. function call
+        // 2. Enum variable
+        // 3. global/local variable
+        match(Id);
+
+        id = current_id;
+
+        if(token == '(')
+        {
+            // function call
+            match('(');
+
+            // pass in arguments
+            tmp = 0; // number of arguments
+            while(token != ')')
+            {
+                expression(Assign);
+                *++text = PUSH;
+                tmp++;
+
+                if(token == ',') match(',');
+            }
+            match(')');
+
+            // emit code
+            if(id[Class] = Sys) *++text = id[Value]; // system functions
+            else if(id[Class] == Fun)
+            {
+                // function call
+                *++text = CALL;
+                *++text = id[Value];
+            }
+            else
+            {
+                printf("%d: bad function call\n", line);
+                exit(-1);
+            }
+        }
+    }
 }
- /* entrance of grammar analysis, analyzing the whole c-file*/
+
+/* entrance of grammar analysis, analyzing the whole c-file*/
 void program()
 {
     next(); // get next token
