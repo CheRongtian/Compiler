@@ -2,7 +2,7 @@
 #define NEXT_H
 
 enum {
-    Token, Hash, Name, Type, Class, Value, Btype, Bclass, Bvalue, IdSize
+    Token, Hash, Name, Type, Class, Value, BType, BClass, BValue, IdSize
 };
 
 enum {
