@@ -7,7 +7,7 @@ enum {
 
 enum {
     Num = 128, Fun, Sys, Glo, Loc, Id,
-          Char, Else, Enum, If, Int, Return, Sizeof, While,
+          Char, Else, Enum, If, Int, Return, Sizeof, While, Do,
           Assign, Cond, Lor, Lan, Or, Xor, And, Eq, Ne, Lt, Gt, Le, Ge, Shl, Shr, Add, Sub, Mul, Div, Mod, Inc, Dec, Brak 
 };
 
