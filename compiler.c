@@ -199,6 +199,49 @@ void global_declaration()
     next();
 }
 
+void enum_declaration()
+{
+    // parse enum[id] { a = 1, b = 3, ...}
+    long i = 0;
+    while(token!= '}')
+    {
+        if(token != Id)
+        {
+            printf("%d: bad enum identifier %d\n", line, token);
+            exit(-1);
+        }
+        next();
+        if(token == Assign)
+        {
+            // like {a = 10}
+            next();
+            if(token != Num)
+            {
+                printf("%d: bad enum initializr\n", line);
+                exit(-1);
+            }
+            i = token_val;
+            next();
+        }
+
+        current_id[Class] = Num;
+        current_id[Type] = INT;
+        current_id[Value] = i++;
+
+        if(token == ',') next();
+    }
+}
+
+void match(int tk)
+{
+    if(token == tk) next();
+    else
+    {
+        printf("%d: expected token: %d\n", line, tk);
+        exit(-1);
+    }
+}
+
 /* analysis one expression */
 void expression(int level)
 {
