@@ -8,6 +8,15 @@
 #include "eval.h"
 #include "parse.h"
 
+void global_declaration();
+void enum_declaration();
+void function_declaration();
+void function_parameter();
+void function_body();
+void statement();
+void expression(int level);
+void program();
+
 /*
 change most var from int to long to fit my 64-bit machine
 */
@@ -95,7 +104,7 @@ enum {
 
 // types of variable/function
 enum {CHAR, INT, PTR};
-int *idmain; // the 'main' function
+long *idmain; // the 'main' function
 
 char *line2 = NULL;
 char *src = NULL;
@@ -208,7 +217,7 @@ void enum_declaration()
     {
         if(token != Id)
         {
-            printf("%d: bad enum identifier %d\n", line, token);
+            printf("%d: bad enum identifier %ld\n", line, token);
             exit(-1);
         }
         next();
@@ -613,7 +622,7 @@ void expression(int level)
             expr_type = CHAR;
         }
 
-        while(token = Mul)
+        while(token == Mul)
         {
             match(Mul);
             expr_type += PTR;
@@ -657,7 +666,7 @@ void expression(int level)
             match(')');
 
             // emit code
-            if(id[Class] = Sys) *++text = id[Value]; // system functions
+            if(id[Class] == Sys) *++text = id[Value]; // system functions
             else if(id[Class] == Fun)
             {
                 // function call
@@ -873,7 +882,7 @@ void expression(int level)
 
     else
     {
-        printf("d: bad expression\n", line);
+        printf("%d: bad expression\n", line);
         exit(-1);
     }
 
@@ -1245,39 +1254,13 @@ void expression(int level)
 void program()
 {
     next(); // get next token
-    /*
-    while(token > 0)
-    {
-        printf("token is : %ld\n", token);
-        next();
-    }
-    */
-   global_declaration();
+    while(token > 0) global_declaration();
 }
 
 int main(int argc, char **argv)
 {
-    size_t linecap = 0;
-    ssize_t linelen;
-    int *tmp;
-    // setup stack
-    sp = (long*)((long)stack + poolsize);
-    *--sp = EXIT; // call exit if main returns
-    *--sp = PUSH;
-    tmp = sp;
-    *--sp = argc;
-    *--sp = (long)argv;
-    *--sp = (long)tmp;
-
-    while((linelen = getline(&line2, &linecap, stdin)) > 0)
-    {
-        src = line2;
-        next();
-        printf("%d\n", expr());
-    }
-    return 0;
-    /*
     int i, fd;
+    long *tmp;
     
     argc--;
     argv++;
@@ -1285,6 +1268,76 @@ int main(int argc, char **argv)
     poolsize = 256 * 1024; // arbitary size
     line = 1;
 
+    // allocate memory for virtual machine
+    if(!(text = old_text = malloc(poolsize)))
+    {
+        printf("could not malloc(%d) for text area", poolsize);
+        return -1;
+    }
+
+    if(!(data = malloc(poolsize)))
+    {
+        printf("could not malloc(%d) for data area", poolsize);
+        return -1;
+    }
+
+    if(!(stack = malloc(poolsize)))
+    {
+        printf("could not malloc(%d) for stack area", poolsize);
+        return -1;
+    }
+
+    if(!(symbols = malloc(poolsize)))
+    {
+        printf("could not malloc(%d) for symbol table\n", poolsize);
+        return -1;
+    }
+
+    memset(text, 0, poolsize); // The memset() fills a range of memeory in the same value(0)
+    memset(data, 0, poolsize);
+    memset(stack, 0, poolsize);
+    memset(symbols, 0, poolsize);
+
+    bp = sp = (long *)((long)stack + poolsize);
+    ax = 0;
+
+    src = "char else enum if int return sizeof while "
+          "open read close printf malloc memset memcmp exit void main";
+
+    // add keywords to symbol table
+    i = Char;
+    while(i <= Do)
+    {
+        next();
+        current_id[Token] = i++;
+    }
+
+    /*
+    // add library to symbol table
+    i = OPEN;
+    while(i <= EXIT)
+    {
+        next();
+        current_id[Class] = Sys;
+        current_id[Type] = INT;
+        current_id[Value] = i++;
+    }
+    */
+    i = OPEN;
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = OPEN; // open
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = READ; // read
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = CLOS; // close
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = PRTF; // printf
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = MALC; // malloc
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = MSET; // memset
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = MCMP; // memcmp
+    next(); current_id[Class] = Sys; current_id[Type] = INT; current_id[Value] = EXIT; // exit
+    
+
+    next(); current_id[Token] = Char; // handle void type
+    next(); idmain = current_id; // keep track of main
+
+    // read the source file 
     if((fd = open(*argv, 0)) < 0)
     {
         printf("could not open (%s)\n", *argv);
@@ -1307,67 +1360,23 @@ int main(int argc, char **argv)
     src[i] = 0; // add EOF character
     close(fd);
 
-    // allocate memory for virtual machine
-    if(!(text = old_text = malloc(poolsize)))
-    {
-        printf("could not malloc(%d) size for text area", poolsize);
+    program();
+
+    if (!(pc = (long *)idmain[Value])) {
+        printf("main() not defined\n");
         return -1;
     }
 
-    if(!(data = malloc(poolsize)))
-    {
-        printf("could not malloc(%d) size for data area", poolsize);
-        return -1;
-    }
+    // setup stack
+    sp = (long*)((long)stack + poolsize);
+    *--sp = EXIT; // call exit if main returns
+    long *exit_addr = sp;
+    *--sp = PUSH;
+    tmp = sp;
+    *--sp = argc;
+    *--sp = (long)argv;
+    *--sp = (long)exit_addr;
+    // *--sp = (long)tmp;
 
-    if(!(stack = malloc(poolsize)))
-    {
-        printf("could not malloc(%d) size for stack area", poolsize);
-        return -1;
-    }
-
-    memset(text, 0, poolsize); // The memset() fills a range of memeory in the same value(0)
-    memset(data, 0, poolsize);
-    memset(stack, 0, poolsize);
-
-    bp = sp = (long *)((long)stack + poolsize);
-    ax = 0;
-
-    src = "char else enum if int return sizeof while "
-    "open read close printf malloc memeset memcmp exit void main";
-
-    // add keywords to symbol table
-    i = Char;
-    while(i <= While)
-    {
-        next();
-        current_id[Token] = i++;
-    }
-
-    // add library to symbol table
-    i = OPEN;
-    while(i <= EXIT)
-    {
-        next();
-        current_id[Class] = Sys;
-        current_id[Type] = INT;
-        current_id[Value] = i++;
-    }
-
-    next(); current_id[Token] = Char; // handle void type
-    next(); idmain = current_id; // keep track of main
-    // test "10 + 20"
-    // i = 0;
-    // text[i++] = IMM;
-    // text[i++] = 10;
-    // text[i++] = PUSH;
-    // text[i++] = IMM;
-    // text[i++] = 20;
-    // text[i++] = ADD;
-    // text[i++] = PUSH;
-    // text[i++] = EXIT;
-    // pc = text;
-    // program();
     return eval();
-    */
 }
