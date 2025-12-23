@@ -1301,7 +1301,7 @@ int main(int argc, char **argv)
     bp = sp = (long *)((long)stack + poolsize);
     ax = 0;
 
-    src = "char else enum if int return sizeof while "
+    src = "char else enum if int return sizeof while do "
           "open read close printf malloc memset memcmp exit void main";
 
     // add keywords to symbol table

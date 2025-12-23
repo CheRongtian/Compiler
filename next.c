@@ -11,8 +11,8 @@ void next()
 {
     char *last_pos;
     int hash;
-    token = *src;
-    while (token) 
+    //token = *src;
+    while ((token = *src)) 
     {
         src++; // parse token here, use while to jump unknown token
         if(token == '\n') ++line; // switch lines
@@ -22,7 +22,7 @@ void next()
             while(*src != 0 && *src != '\n') src++;
         }
     
-        else if ((token >= 'a' && token <= 'z') || (token <= 'A' && token <= 'Z') || (token == '_'))
+        else if ((token >= 'a' && token <= 'z') || (token >= 'A' && token <= 'Z') || (token == '_'))
         {
             // parser identifier
             last_pos = src - 1;
@@ -50,7 +50,7 @@ void next()
             // store new ID
             current_id[Name] = (long) last_pos;
             current_id[Hash] = hash;
-            token = current_id[Hash] = Id;
+            token = current_id[Token] = Id;
             return;
         }
 
@@ -87,30 +87,6 @@ void next()
         }
 
         else if(token =='"' || token == '\'')
-        {
-            // parse string literal, currently, the only supported escape
-            // character is '\n', store the string literal into data
-            last_pos = data;
-            while(*src != 0 && *src != token)
-            {
-                token_val = *src++;
-                if(token_val == '\\')
-                {
-                    // escape character
-                    token_val = *src++;
-                    if(token_val == '\n') token_val = '\n';
-                }
-                if(token == '"') *data++ = token_val;
-            }
-
-            src++;
-            // if it is a single character, return Num token
-            if(token == '"') token_val = (long)last_pos;
-            else token = Num;
-            return;
-        }
-
-        else if(token == '"' || token == '\'')
         {
             // parse string literal, currently, the only supported escape
             // character is '\n', store the string literal into data
