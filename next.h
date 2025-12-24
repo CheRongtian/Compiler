@@ -1,10 +1,12 @@
 #ifndef NEXT_H
 #define NEXT_H
 
+// fields of identifier
 enum {
     Token, Hash, Name, Type, Class, Value, BType, BClass, BValue, IdSize
 };
 
+// tokens and classes
 enum {
     Num = 128, Fun, Sys, Glo, Loc, Id,
           Char, Else, Enum, If, Int, Return, Sizeof, While, Do,

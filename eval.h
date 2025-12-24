@@ -3,6 +3,7 @@
 
 int eval();
 
+// Instructions
 enum { LC, LI, SC, SI,
        IMM, PUSH, JMP, JZ, JNZ, CALL, ENT, ADJ, LEV, LEA, 
        OR, XOR, AND, EQ, NE, LT, LE, GT, GE, SHL, SHR, ADD, SUB, MUL, DIV, MOD,
