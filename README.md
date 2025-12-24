@@ -36,8 +36,8 @@ Compiler/
 ```
 
 ## How to use this?
-```
-## How to compiler + test running:
+
+How to compile + test running:
 ```bash
 mkdir build
 cd build
