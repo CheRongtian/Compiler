@@ -9,7 +9,7 @@ But modify some by myself:
 
 ## Structure
 
-```css
+```
 Compiler/
 ├── CMakeLists.txt
 ├── compiler.c
@@ -66,8 +66,8 @@ fibonacci(10) = 89
 exit(0)
 ```
 
-## Reorganize(TBC)
-```css
+## Reorganize
+```
 reorganization version/
 ├── global.h
 ├── main.c
