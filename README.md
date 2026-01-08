@@ -66,7 +66,14 @@ fibonacci(10) = 89
 exit(0)
 ```
 
-## Reorganize(TBC)
+## Reorganize
+
+```bash
+git checkout -b final-version
+git add "folder_name"
+git commit -m "xxxx"
+git push -u original final-version
+```
 ```css
 reorganization version/
 ├── global.h
